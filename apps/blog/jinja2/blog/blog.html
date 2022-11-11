@@ -1,0 +1,111 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.info_1_image_1 -%}
+<meta property="og:image" content="{{ site_url() }}{{ page.info_1_image_1.url }}">
+{%- endif -%}
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.info_1_image_1 -%}
+<meta name="twitter:image" content="{{ site_url() }}{{ page.info_1_image_1.url }}">
+{%- endif -%}
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- include 'widgets/hero.html' -%}
+
+<section class="blog articles-list">
+  <div class="container">
+    <div class="row justify-content-center">
+    	<div class="col-lg-10">
+
+        {%- for article in articles -%}
+          <div class="post wow fadeIn">
+            {%- if article.list_image or article.image -%}
+              <a href="{{ lang_url('blog:article', lang=request.LANGUAGE_CODE, slug=article.slug) }}"
+                 class="post-image"
+                 style="background-image: url(
+              {%- if article.list_image -%}
+                {{ article.list_image.url }}
+              {%- else -%}
+                {{ article.image.url }}
+              {%- endif -%})">
+              </a>
+            {%- endif -%}
+
+            <div class="post-content">
+              <b>
+                {%- if request.LANGUAGE_CODE == 'ru' -%}
+                  {{ article.publish_date | date('d E Y') }}
+                {%- else -%}
+                  {{ article.publish_date | date('d, E Y') }}
+                {%- endif -%}
+              </b>
+
+              <h4>
+                <a href="{{ lang_url('blog:article', lang=request.LANGUAGE_CODE, slug=article.slug) }}">
+                  {{- article.title -}}
+                </a></h4>
+            </div>
+          </div>
+        {%- endfor -%}
+
+        {%- if paginator and paginator.has_other_pages() -%}
+          <ul class="pagination">
+            {%- if paginator.has_previous() -%}
+              <li class="page-item"><a class="page-link" href="
+                {%- if paginator.previous_page_number() > 1 -%}
+                  ?page={{ paginator.previous_page_number() -}}
+                {%- else -%}
+                  {{ lang_url('blog:blog', lang=request.LANGUAGE_CODE) }}
+                {%- endif -%}
+              ">«</a></li>
+            {%- endif -%}
+
+            {%- for i in paginator.pages() -%}
+              <li class="page-item{% if paginator.number == i %} active{% endif %}">
+              {%- if i -%}
+                  <a class="page-link" href="
+                    {%- if i > 1 %}?page={{ i }}{% else %}{{ lang_url('blog:blog', lang=request.LANGUAGE_CODE) }}{% endif -%}
+                  ">{{ i }}</a>
+              {%- else -%}
+                  <span>...</span>
+              {%- endif -%}
+              </li>
+            {%- endfor -%}
+
+            {%- if paginator.has_next() -%}
+              <li class="page-item"><a class="page-link" href="
+                {%- if paginator.next_page_number() > 1 -%}
+                  ?page={{ paginator.next_page_number() -}}
+                {%- else -%}
+                  {{ lang_url('blog:blog', lang=request.LANGUAGE_CODE) }}
+                {%- endif -%}
+              ">»</a></li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- include 'widgets/subscribe.html' -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- if page.hero_button_script and page.hero_button_content -%}
+  {{- page.hero_button_script -}}
+{%- endif -%}
+{%- endblock -%}

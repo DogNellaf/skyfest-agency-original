@@ -1,0 +1,446 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.info_1_image_1 -%}
+<meta property="og:image" content="{{ site_url() }}{{ page.info_1_image_1.url }}">
+{%- endif -%}
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.info_1_image_1 -%}
+<meta name="twitter:image" content="{{ site_url() }}{{ page.info_1_image_1.url }}">
+{%- endif -%}
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- set slides = page.slides.published() -%}
+{%- if slides -%}
+<div class="hero-slider swiper">
+  <div class="swiper-wrapper">
+    {%- for slide in slides -%}
+    <div class="swiper-slide">
+      <header class="header{% if slide.hero_bg %} has-desktop{% endif %}{% if slide.hero_bg_mobile %} has-mobile{% endif %}"
+              style="{% if slide.hero_bg_color %}background-color:{{ slide.hero_bg_color }}{% endif %}">
+        <div class="before"
+          {%- if slide.hero_bg %} style="background-image: url('
+          {{- slide.hero_bg.url }}');opacity:
+          {{- slide.hero_bg_opacity or '1' }}"{% endif %}></div>
+
+        {%- if slide.hero_bg_mobile -%}
+        <div class="before-mobile"
+             style="background-image: url('
+             {{- slide.hero_bg_mobile.url }}');opacity:
+             {{- slide.hero_bg_opacity or '1' }}"></div>
+        {%- endif -%}
+
+        <div class="container">
+          <div class="inner">
+            {%- if slide.hero_subtitle -%}
+              <small>{{ slide.hero_subtitle }}</small>
+            {%- endif -%}
+
+            {%- if slide.hero_title or slide.title -%}
+              <h1{% if (slide.hero_title or slide.title).endswith(('.', '!', '?')) %} class="no-dot"{% endif %}>
+                {{- slide.hero_title or slide.title -}}
+              </h1>
+            {%- endif -%}
+
+            {%- if slide.hero_button_content and slide.hero_button_script -%}
+              {{- slide.hero_button_content -}}
+
+            {%- elif slide.hero_button_caption and slide.hero_button_order -%}
+              <span class="btn order-btn">{{ slide.hero_button_caption }}</span>
+
+            {%- elif slide.hero_button_caption and slide.hero_button_link -%}
+              <a href="{{ slide.hero_button_link|e }}">{{ slide.hero_button_caption }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+      </header>
+    </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if slides|length > 1 -%}
+  <div class="swiper-button-prev"><i class="fas fa-chevron-left"></i></div>
+  <div class="swiper-button-next"><i class="fas fa-chevron-right"></i></div>
+  {%- endif -%}
+</div>
+{%- endif -%}
+
+{%- if page.show_brands and brands -%}
+<section class="content-block partners">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="inner">
+          <ul>
+            {%- if page.brands_title -%}
+              <li class="wow fadeIn">
+                <h6>{{ page.brands_title }}</h6>
+              </li>
+            {%- endif -%}
+            {%- for brand in brands -%}
+            <li class="wow fadeIn">
+              <figure><img src="{{ brand.logo.url }}"
+                           alt="{% if brand.title %}{{ brand.title|e }}{% endif %}"></figure>
+            </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if page.show_projects and projects -%}
+<section class="content-block no-spacing">
+  <div class="row no-gutters">
+    <div class="col-12 wow fadeIn">
+      <div class="carousel-slider">
+        <div class="swiper-wrapper">
+          {%- for project in projects -%}
+            <div class="swiper-slide">
+              <figure>
+                {%- if project.list_image -%}
+                  <div class="img" style="background-image:url({{ project.list_image.url }})"></div>
+                {%- endif -%}
+
+                {%- if project.title or project.categories -%}
+                  <figcaption>
+                    {%- if project.categories_verbose -%}
+                      <small>{{ project.categories_verbose }}</small>
+                    {%- endif -%}
+
+                    {%- if project.title -%}
+                      <h3>
+                        <a href="{{ lang_url('projects:project', lang=request.LANGUAGE_CODE, slug=project.slug) }}">
+                          {{- project.title -}}
+                        </a>
+                      </h3>
+                    {%- endif -%}
+                  </figcaption>
+                {%- endif -%}
+
+              </figure>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if projects | length > 1 -%}
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"><i class="fas fa-chevron-left"></i></div>
+          <div class="swiper-button-next"><i class="fas fa-chevron-right"></i></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if page.show_info_1 -%}
+<section class="content-block">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 wow fadeIn">
+        <div class="text-content-block">
+          {%- if page.info_1_subtitle -%}
+            <h6>{{ page.info_1_subtitle }}</h6>
+          {%- endif -%}
+
+          {%- if page.info_1_title -%}
+          <h2>{{ page.info_1_title | linebreaksbr }}</h2>
+          {%- endif -%}
+
+          {%- if page.info_1_content -%}
+            <div class="text-content-content html-content">
+              {{- page.info_1_content -}}
+            </div>
+          {%- endif -%}
+
+          {%- if page.info_1_icon_1 or page.info_1_icon_2 or page.info_1_icon_3 -%}
+            <figure>
+              {%- if page.info_1_icon_1 -%}
+                <img src="{{ page.info_1_icon_1.url }}" alt="">
+              {%- endif -%}
+
+              {%- if page.info_1_icon_2 -%}
+                <img src="{{ page.info_1_icon_2.url }}" alt="">
+              {%- endif -%}
+
+              {%- if page.info_1_icon_3 -%}
+                <img src="{{ page.info_1_icon_3.url }}" alt="">
+              {%- endif -%}
+            </figure>
+          {%- endif -%}
+
+          {%- if page.info_1_button_caption and page.info_1_button_link -%}
+            <a href="{{ page.info_1_button_link | e }}">{{ page.info_1_button_caption }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if page.info_1_image_1 -%}
+        <div class="col-lg-3 col-md-6 wow fadeIn">
+          <figure class="image-box" data-stellar-ratio="1.3"> <img src="{{ page.info_1_image_1.url }}" alt=""></figure>
+        </div>
+      {%- endif -%}
+
+      {%- if page.info_1_image_2 -%}
+        <div class="col-lg-3 col-md-6 wow fadeIn">
+          <figure class="image-box" data-stellar-ratio="1.1"> <img src="{{ page.info_1_image_2.url }}" alt=""></figure>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if page.show_services and services -%}
+<section class="content-block">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-12 wow fadeIn">
+        <div class="title-block title-block--content">
+          {%- if page.services_icon -%}
+            <img src="{{ page.services_icon.url }}" alt="">
+          {%- endif -%}
+
+          {%- if page.services_subtitle -%}
+            <h6>{{ page.services_subtitle }}</h6>
+          {%- endif -%}
+
+          {%- if page.services_title -%}
+            <h2>
+              <a href="{{ lang_url('services:services', lang=request.LANGUAGE_CODE) }}">{{ page.services_title }}</a>
+            </h2>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- for service in services -%}
+      <div class="col-lg-3 col-md-4 wow fadeIn">
+        <a class="icon-content-box" href="{{ lang_url('services:service', lang=request.LANGUAGE_CODE, slug=service.slug) }}">
+          {%- if service.icon -%}
+            <figure>
+              <img src="{{ service.icon.url }}" alt="">
+            </figure>
+          {%- endif -%}
+
+          {%- if service.title -%}
+            <h5>{{ service.title }}</h5>
+          {%- endif -%}
+
+          {%- if service.excerpt -%}
+            <div class="html-content">{{ service.excerpt }}</div>
+          {%- endif -%}
+        </a>
+      </div>
+      {%- endfor -%}
+
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if page.show_info_2 -%}
+<section class="content-block no-spacing">
+  <div class="container-fluid">
+    <div class="row no-gutters align-items-center">
+      {%- if page.info_2_image_1 or page.info_2_image_2 or page.info_2_image_3 -%}
+      <div class="col-lg-6 wow fadeIn">
+        <figure class="multi-image-box">
+          <div class="images-wrapper">
+            {%- if page.info_2_image_1 -%}
+              <img src="{{ page.info_2_image_1.url }}" alt="">
+            {%- endif -%}
+
+            {%- if page.info_2_image_2 -%}
+              <img src="{{ page.info_2_image_2.url }}" alt="">
+            {%- endif -%}
+
+            {%- if page.info_2_image_3 -%}
+              <img src="{{ page.info_2_image_3.url }}" alt="">
+            {%- endif -%}
+          </div>
+        </figure>
+      </div>
+      {%- endif -%}
+
+      <div class="col-lg-{% if page.info_2_image_1 or page.info_2_image_2 or page.info_2_image_3 -%}6{% else %}12{% endif %} wow fadeIn">
+        <div class="text-content-block">
+          {%- if page.info_2_subtitle -%}
+            <h6>{{ page.info_2_subtitle }}</h6>
+          {%- endif -%}
+
+          {%- if page.info_2_title -%}
+            <h2>{{ page.info_2_title }}</h2>
+          {%- endif -%}
+
+          {%- if page.info_2_content -%}
+            <div class="html-content">{{ page.info_2_content }}</div>
+          {%- endif -%}
+
+          {%- if page.info_2_image -%}
+            <figure>
+              <img class="other-image" src="{{ page.info_2_image.url }}" alt="">
+            </figure>
+          {%- endif -%}
+
+          {%- if page.info_2_button_caption and page.info_2_button_link -%}
+            <a href="{{ page.info_2_button_link }}">{{ page.info_2_button_caption }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- if page.show_info_3 -%}
+<section class="content-block no-bottom-spacing">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 wow fadeIn">
+        <div class="text-content-block">
+          {%- if page.info_3_subtitle -%}
+            <h6>{{ page.info_3_subtitle }}</h6>
+          {%- endif -%}
+
+          {%- if page.info_3_title -%}
+            <h2>{{ page.info_3_title }}</h2>
+          {%- endif -%}
+
+          {%- if page.info_3_content -%}
+            <div class="html-content">{{ page.info_3_content }}</div>
+          {%- endif -%}
+
+          {%- if page.info_3_icon_1 or page.info_3_icon_2 or page.info_3_icon_3 -%}
+            <figure>
+              {%- if page.info_3_icon_1 -%}
+                <img src="{{ page.info_3_icon_1.url }}" alt="">
+              {%- endif -%}
+
+              {%- if page.info_3_icon_2 -%}
+                <img src="{{ page.info_3_icon_2.url }}" alt="">
+              {%- endif -%}
+
+              {%- if page.info_3_icon_3 -%}
+                <img src="{{ page.info_3_icon_3.url }}" alt="">
+              {%- endif -%}
+            </figure>
+          {%- endif -%}
+
+          {%- if page.info_3_button_link and page.info_3_button_caption -%}
+            <a href="{{ page.info_3_button_link }}">{{ page.info_3_button_caption }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if page.info_3_image -%}
+        <div class="col-lg-6 wow fadeIn">
+          <figure class="image">
+            <img src="{{ page.info_3_image.url }}" alt="">
+          </figure>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- include 'widgets/call_to_action.html' -%}
+
+{%- if page.show_blog and articles -%}
+<section class="content-block bg-pattern">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 wow fadeIn">
+        <div class="text-content-block">
+          {%- if page.blog_subtitle -%}
+            <h6>{{ page.blog_subtitle }}</h6>
+          {%- endif -%}
+
+          {%- if page.blog_title -%}
+            <h2>{{ page.blog_title }}</h2>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- for article in articles -%}
+        <div class="{% if loop.first %}col-lg-6{% else %}col-lg-3 col-md-6{% endif %} wow fadeIn">
+          <a class="news-box head-news"
+             href="{{ lang_url('blog:article', lang=request.LANGUAGE_CODE, slug=article.slug) }}">
+            {%- if article.list_image or article.image -%}
+              <figure class="news-image" style="background-image: url(
+              {%- if article.list_image -%}
+                {{ article.list_image.url }}
+              {%- else -%}
+                {{ article.image.url }}
+              {%- endif -%})">
+              </figure>
+            {%- endif -%}
+
+            <div class="news-content">
+              <b>
+                {%- if request.LANGUAGE_CODE == 'ru' -%}
+                  {{ article.publish_date | date('d E Y') }}
+                {%- else -%}
+                  {{ article.publish_date | date('d, E Y') }}
+                {%- endif -%}
+              </b>
+              <h4>{{ article.title }}</h4>
+            </div>
+          </a>
+        </div>
+      {%- endfor -%}
+
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- include 'widgets/subscribe.html' -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- set slides = page.slides.published() -%}
+{%- for slide in slides -%}
+{%- if slide.hero_button_script and slide.hero_button_content -%}
+  {{- slide.hero_button_script -}}
+{%- endif -%}
+{%- endfor -%}
+
+{%- if slides and slides|length > 1 -%}
+<script>
+$(document).ready(function () {
+  new Swiper('.hero-slider', {
+    loop: true,
+    slidesPerView: 1,
+    spaceBetween: 0,
+    autoplay: {
+      delay: 5000,
+      pauseOnMouseEnter: false,
+      disableOnInteraction: false
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    }
+  })
+});
+</script>
+{%- endif -%}
+{%- endblock -%}

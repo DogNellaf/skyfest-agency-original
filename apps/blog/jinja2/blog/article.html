@@ -1,0 +1,130 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.image -%}
+<meta property="og:image" content="{{ site_url() }}{{ page.image.url }}">
+{%- elif page.list_image -%}
+<meta property="og:image" content="{{ site_url() }}{{ page.list_image.url }}">
+{%- endif -%}
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.image -%}
+<meta name="twitter:image" content="{{ site_url() }}{{ page.image.url }}">
+{%- elif page.list_image -%}
+<meta name="twitter:image" content="{{ site_url() }}{{ page.list_image.url }}">
+{%- endif -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- if page.hero_button_script and page.hero_button_content -%}
+    {{- page.hero_button_script -}}
+{%- endif -%}
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- include 'widgets/hero.html' -%}
+
+<section class="blog">
+  <div class="container">
+    <div class="row justify-content-center">
+    	<div class="col-lg-10">
+        <div class="post single wow fadeIn">
+          {%- if page.image -%}
+            <figure class="post-image">
+              <img src="{{ page.image.url }}" alt="">
+            </figure>
+          {%- endif -%}
+
+          <div class="post-content">
+            <b>
+              {%- if request.LANGUAGE_CODE == 'ru' -%}
+                {{ page.publish_date | date('d E Y') }}
+              {%- else -%}
+                {{ page.publish_date | date('d, E Y') }}
+              {%- endif -%}
+            </b>
+
+            {%- if page.title -%}
+              <h4>{{ page.title }}</h4>
+            {%- endif -%}
+
+            <ul class="social-share">
+              <li class="facebook">
+                <i class="fab fa-facebook-f"></i>
+              </li>
+              <li class="vk">
+                <i class="fab fa-vk"></i>
+              </li>
+              <li class="ok">
+                <i class="fab fa-odnoklassniki"></i>
+              </li>
+            </ul>
+
+            {%- if page.content -%}
+              <div class="html-content">{{ page.content }}</div>
+            {%- endif -%}
+
+            {%- for section in sections -%}
+              <div class="article-section">
+                {%- if section.title -%}
+                  <h3>{{ section.title }}</h3>
+                {%- endif -%}
+
+                {%- if section.content -%}
+                  <div class="html-content">
+                    {%- if section.has_bg -%}
+                      <blockquote>{{ section.content }}</blockquote>
+                    {%- else -%}
+                      {{- section.content -}}
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- if section.gallery and section.gallery.status == published_status -%}
+                  {%- set photos = section.gallery.photos.published() -%}
+                  {%- if photos -%}
+                    <div class="col-12 wow fadeIn">
+                      <div class="simple-slider">
+                        <div class="swiper-wrapper">
+                          {%- for photo in photos -%}
+                            <div class="swiper-slide">
+                              <figure>
+                                {%- if photo.image -%}
+                                  <div class="img" style="background-image:url({{ photo.image.url }})"></div>
+                                {%- endif -%}
+                              </figure>
+                            </div>
+                          {%- endfor -%}
+                        </div>
+
+                        {%- if photos | length > 1 -%}
+                          <div class="swiper-button-prev"><i class="fas fa-chevron-left"></i></div>
+                          <div class="swiper-button-next"><i class="fas fa-chevron-right"></i></div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- include 'widgets/subscribe.html' %}
+
+{%- endblock -%}

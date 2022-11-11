@@ -1,0 +1,30 @@
+{%- if page.show_subscribe and page.subscribe_block_id and page.subscribe_block.button -%}
+<section class="subscription-block">
+  <div class="container">
+    <div class="subscribe-box">
+      <div class="before"{%- if page.subscribe_block.bg %} style="background-image:url({{ page.subscribe_block.bg.url }})"{% endif %}></div>
+      <div class="inner wow fadeIn">
+        {%- if page.subscribe_block.title -%}
+          <h2>{{ page.subscribe_block.title }}</h2>
+        {%- endif %}
+
+        <form action="{{ lang_url('forms:subscribe', lang=request.LANGUAGE_CODE) }}" method="POST"
+              autocomplete="off" novalidate class="form subscribe-form">
+
+          {{- csrf_input -}}
+          <div class="line">
+            <input type="email" name="email" placeholder="{{ _('Type your e-mail address') }}">
+            <input type="submit" value="{{ page.subscribe_block.button }}">
+            <div class="form__err" role="alert"></div>
+          </div>
+          <div>
+            <input type="hidden" name="language" value="{{ request.LANGUAGE_CODE }}">
+          </div>
+          <div id="error" class="form__messages" role="alert"></div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}

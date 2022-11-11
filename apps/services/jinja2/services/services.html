@@ -1,0 +1,73 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- include 'widgets/hero.html' -%}
+
+<section class="content-block">
+  <div class="container">
+    {%- if page.top_content -%}
+        <div class="html-content services-top-content">{{ page.top_content }}</div>
+    {%- endif -%}
+
+    {%- if services -%}
+    <div class="row">
+      {%- for service in services -%}
+        <div class="col-lg-4 col-md-6 wow fadeIn">
+          <div class="price-box">
+            {%- if service.icon -%}
+              <figure>
+                <a href="{{ lang_url('services:service', lang=request.LANGUAGE_CODE, slug=service.slug) }}">
+                  <img src="{{ service.icon.url }}" alt="">
+                </a>
+              </figure>
+            {%- endif -%}
+
+            {%- if service.title -%}
+              <h6>{{ service.title }}</h6>
+            {%- endif -%}
+
+            {%- if service.excerpt -%}
+              <div class="html-content descr2">{{ service.excerpt }}</div>
+            {%- endif -%}
+
+            {%- if page.service_button_caption -%}
+              <a href="{{ lang_url('services:service', lang=request.LANGUAGE_CODE, slug=service.slug) }}">
+                {{- page.service_button_caption -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+
+    {%- if page.bottom_content -%}
+      <div class="html-content services-bottom-content{% if not services %} no-services{% endif %}">{{ page.bottom_content }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- include 'widgets/subscribe.html' -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- if page.hero_button_script and page.hero_button_content -%}
+  {{- page.hero_button_script -}}
+{%- endif -%}
+{%- endblock -%}

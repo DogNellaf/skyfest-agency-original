@@ -1,0 +1,213 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- include 'widgets/hero.html' -%}
+
+<section class="content-block no-bottom-spacing solutions">
+  <div class="container">
+    <div class="row">
+    	<div class="col-12">
+        {%- if page.content_title -%}
+    		  <h2>{{ page.content_title }}</h2>
+        {%- endif -%}
+
+        {%- if (page.client and list_page.event_client_label) or (page.categories_verbose and list_page.event_categories_label) or (page.event_dates or list_page.event_date_label) or (page.location or list_page.location_label) %}
+          <ol class="specs">
+            {%- if page.client and list_page.event_client_label -%}
+            <li>
+              <b>{{ list_page.event_client_label }}</b>&nbsp;
+              {{ page.client -}}
+            </li>
+            {%- endif -%}
+
+            {%- if list_page.event_categories_label and page.categories_verbose -%}
+            <li>
+              <b>{{ list_page.event_categories_label }}</b>&nbsp;
+              {{ page.categories_verbose -}}
+            </li>
+            {%- endif -%}
+
+            {%- if list_page.event_date_label and page.event_dates %}
+            <li>
+              <b>{{ list_page.event_date_label }}</b>&nbsp;
+              {{ page.event_dates -}}
+            </li>
+            {% endif -%}
+
+            {%- if page.location and list_page.location_label %}
+            <li>
+              <b>{{ list_page.location_label }}</b>&nbsp;
+              {{ page.location -}}
+            </li>
+            {% endif -%}
+          </ol>
+        {%- endif -%}
+    	</div>
+
+      {%- if page.content_1_subtitle or page.content_1 -%}
+        <div class="col-lg-9 wow fadeIn">
+          {%- if page.content_1_subtitle -%}
+            <h5>{{ page.content_1_subtitle }}</h5>
+          {%- endif -%}
+
+          {%- if page.content_1 -%}
+            <div class="html-content">{{ page.content_1 }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- if gallery_photos -%}
+<section class="content-block">
+  <div class="row no-gutters">
+    <div class="col-12 wow fadeIn">
+      <div class="carousel-slider">
+        <div class="swiper-wrapper">
+          {%- for photo in gallery_photos -%}
+            <div class="swiper-slide">
+              <figure>
+                <div class="img" style="background-image:url({{ photo.image.url }})"></div>
+              </figure>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if gallery_photos | length > 1 -%}
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"><i class="fas fa-chevron-left"></i></div>
+          <div class="swiper-button-next"><i class="fas fa-chevron-right"></i></div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+<section class="content-block{% if gallery_photos %} no-top-spacing{% endif %} solutions">
+  <div class="container">
+    <div class="row">
+      {%- if page.info_1_title or page.info_1_content -%}
+        <div class="col-lg-7 mb-5">
+          {%- if page.info_1_title -%}
+            <h5>{{ page.info_1_title }}</h5>
+          {%- endif -%}
+
+          {%- if page.info_1_content -%}
+            <div class="html-content">{{ page.info_1_content }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if page.info_2_title or page.info_2_content -%}
+        <div class="col-lg-5 wow fadeIn">
+          {%- if page.info_2_title -%}
+            <h5>{{ page.info_2_title }}</h5>
+          {%- endif -%}
+
+          {%- if page.info_2_content -%}
+            <div class="html-content">{{ page.info_2_content }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if page.section_content -%}
+        <div class="col-12 wow fadeIn">
+          <div class="html-content">{{ page.section_content }}</div>
+          {%- if section_icons -%}
+            <figure class="icon-set">
+              {%- for section_icon in section_icons -%}
+                <img src="{{ section_icon.icon.url }}" alt="">
+              {%- endfor -%}
+            </figure>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- for indicator in indicators -%}
+        <div class="col-md-6 wow fadeIn">
+          <h6>{{ indicator.title }}</h6>
+          <span class="odometer" data-count="{{ indicator.value }}" data-status="yes">0</span>
+          {%- if indicator.unit -%}
+            <small class="symbol">{{ indicator.unit }}</small>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+
+      {%- if page.content_2_subtitle or page.content_2 -%}
+        <div class="col-12 wow fadeIn">
+        {%- if page.content_2_subtitle -%}
+          <h5>{{ page.content_2_subtitle | linebreaksbr }}</h5>
+        {%- endif -%}
+
+        {%- if page.content_2 -%}
+          <div class="html-content">{{ page.content_2 }}</div>
+        {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if page.content_2_image_1 -%}
+        <div class="col-md-4 wow fadeIn">
+          <figure class="thumb">
+            <a href="{{ page.content_2_image_1.url }}" data-fancybox>
+              <img src="{{ page.content_2_image_1.url }}" alt="">
+            </a>
+          </figure>
+        </div>
+      {%- endif -%}
+
+      {%- if page.content_2_image_2 -%}
+        <div class="col-md-4 wow fadeIn">
+          <figure class="thumb">
+            <a href="{{ page.content_2_image_2.url }}" data-fancybox>
+              <img src="{{ page.content_2_image_2.url }}" alt="">
+            </a>
+          </figure>
+        </div>
+      {%- endif -%}
+
+    	{%- if page.content_2_image_3 -%}
+        <div class="col-md-4 wow fadeIn">
+          <figure class="thumb">
+            <a href="{{ page.content_2_image_3.url }}" data-fancybox>
+              <img src="{{ page.content_2_image_3.url }}" alt="">
+            </a>
+          </figure>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</section>
+
+{%- if page.show_call_to_action and page.call_to_action_id -%}
+  <div class="about-callto-action">
+    {%- include 'widgets/call_to_action.html' -%}
+  </div>
+{%- endif -%}
+
+{%- include 'widgets/subscribe.html' -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- if page.hero_button_script and page.hero_button_content -%}
+  {{- page.hero_button_script -}}
+{%- endif -%}
+{%- endblock -%}

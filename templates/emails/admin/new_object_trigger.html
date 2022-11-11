@@ -1,0 +1,22 @@
+Здравствуйте, дорогой администратор!
+{{ subject }}:
+
+
+{%- if fields -%}
+{%- for field_title, value in fields.items() %}
+{{ field_title|e }}: {{ value }}
+{%- endfor -%}
+{%- endif %}
+
+{%- if extra_data -%}
+{%- for param, value in extra_data.items() %}
+{{ param|e }}: {{ value|e }}
+{%- endfor -%}
+{%- endif %}
+
+{%- if admin_url %}
+Ссылка на администрирование:
+{{ site_url }}{{ admin_url }}
+{%- endif %}
+
+С уважением, Ваш бот.

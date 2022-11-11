@@ -1,0 +1,38 @@
+<header class="header{% if page.hero_bg %} has-desktop{% endif %}{% if page.hero_bg_mobile %} has-mobile{% endif %}"
+        style="{% if page.hero_bg_color %}background-color:{{ page.hero_bg_color }}{% endif %}">
+  <div class="before"
+    {%- if page.hero_bg %} style="background-image: url('
+      {{- page.hero_bg.url }}');opacity:
+      {{- page.hero_bg_opacity or '1' }}"{% endif %}></div>
+
+  {%- if page.hero_bg_mobile -%}
+  <div class="before-mobile"
+     style="background-image: url('
+       {{- page.hero_bg_mobile.url }}');opacity:
+       {{- page.hero_bg_opacity or '1' }}"></div>
+  {%- endif -%}
+
+  <div class="container">
+    <div class="inner">
+      {%- if page.hero_subtitle -%}
+        <small>{{ page.hero_subtitle }}</small>
+      {%- endif -%}
+
+      {%- if page.hero_title or (page.allow_hero_title_from_title and page.title) -%}
+        <h1{% if (page.hero_title or page.title).endswith(('.', '!', '?')) %} class="no-dot"{% endif %}>
+          {{- page.hero_title or page.title -}}
+        </h1>
+      {%- endif -%}
+
+      {%- if page.hero_button_content and page.hero_button_script -%}
+        {{- page.hero_button_content -}}
+
+      {%- elif page.hero_button_caption and page.hero_button_order -%}
+        <span class="btn order-btn">{{ page.hero_button_caption }}</span>
+
+      {%- elif page.hero_button_caption and page.hero_button_link -%}
+        <a href="{{ page.hero_button_link|e }}">{{ page.hero_button_caption }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</header>

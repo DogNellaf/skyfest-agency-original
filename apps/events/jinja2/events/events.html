@@ -1,0 +1,73 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.info_1_image_1 -%}
+<meta property="og:image" content="{{ site_url() }}{{ page.info_1_image_1.url }}">
+{%- endif -%}
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.info_1_image_1 -%}
+<meta name="twitter:image" content="{{ site_url() }}{{ page.info_1_image_1.url }}">
+{%- endif -%}
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- include 'widgets/hero.html' -%}
+
+{%- if events -%}
+<section class="content-block">
+  <div class="container">
+    <div class="row">
+      {%- for event in events -%}
+        <div class="col-lg-4 col-md-6 wow fadeIn">
+          <div class="price-box project-box">
+            {%- if event.list_image -%}
+              <figure>
+                <a href="{{ lang_url('events:event', lang=request.LANGUAGE_CODE, slug=event.slug) }}"
+                  style="background-image: url({{ event.list_image.url }})">
+                </a>
+              </figure>
+            {%- endif -%}
+
+            {%- if event.title -%}
+              <h6>{{ event.title }}</h6>
+            {%- endif -%}
+
+            {%- if event.excerpt -%}
+              <div class="html-content descr">{{ event.excerpt }}</div>
+            {%- endif -%}
+
+            {%- if page.event_button_caption -%}
+              <a href="{{ lang_url('events:event', lang=request.LANGUAGE_CODE, slug=event.slug) }}">
+                {{- page.event_button_caption -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{%- include 'widgets/call_to_action.html' -%}
+
+{%- include 'widgets/subscribe.html' -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- if page.hero_button_script and page.hero_button_content -%}
+  {{- page.hero_button_script -}}
+{%- endif -%}
+{%- endblock -%}

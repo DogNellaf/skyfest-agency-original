@@ -1,0 +1,189 @@
+{%- extends 'layouts/main.html' -%}
+
+{%- block PAGE_TITLE -%}
+  {%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}
+{%- endblock -%}
+{%- block SEO_DESCRIPTION %}{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}{% endblock -%}
+
+{%- block SOCIAL_CARD -%}
+<meta property="og:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.about_image -%}
+<meta property="og:image" content="{{ site_url() }}{{ page.about_image.url }}">
+{%- endif -%}
+<meta property="og:site_name" content="SkyFest">
+<meta property="og:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ site_url() }}{{ full_path }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{%- if page.seo_title %}{{ page.seo_title|e }}{% else %}{{ page.title or '' }}{% endif -%}">
+<meta name="twitter:description" content="{% if page.seo_description %}{{ page.seo_description|e }}{% endif %}">
+{%- if page.about_image -%}
+<meta name="twitter:image" content="{{ site_url() }}{{ page.about_image.url }}">
+{%- endif -%}
+{%- endblock -%}
+
+{%- block PAGE_CONTENT -%}
+{%- include 'widgets/hero.html' -%}
+
+<section class="content-block">
+  <div class="container">
+    <div class="row">
+      {%- if services or (page.show_download_block and page.download_file and page.download_button_caption) -%}
+        <div class="col-lg-4">
+          <aside class="left-sidebar">
+            {%- if services -%}
+              <div class="widget wow fadeIn">
+                {%- if list_page.menu_title -%}
+                  <h4>{{ list_page.menu_title }}</h4>
+                {%- endif -%}
+
+                <ul>
+                  {%- for service in services -%}
+                    <li{% if service.id == page.id %} class="active"{% endif %}>
+                      <a href="{{ lang_url('services:service', lang=request.LANGUAGE_CODE, slug=service.slug) }}">
+                        {{- service.title -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            {%- if page.show_download_block and page.download_file and page.download_button_caption -%}
+              <div class="widget text-center wow fadeIn">
+                {%- if page.download_icon -%}
+                  <a href="{{ page.download_file.url }}">
+                    <img src="{{ page.download_icon.url }}" alt="">
+                  </a>
+                {%- endif -%}
+
+                {%- if page.download_title -%}
+                  <h5>{{ page.download_title }}</h5>
+                {%- endif -%}
+
+                {%- if page.download_description -%}
+                  <div class="html-content">{{ page.download_description }}</div>
+                {%- endif -%}
+
+                <a href="{{ page.download_file.url }}">{{ page.download_button_caption }}</a>
+              </div>
+            {%- endif -%}
+          </aside>
+        </div>
+      {%- endif -%}
+
+      <div class="col-lg-8">
+        <article class="side-content">
+          <div class="row inner">
+            {%- if page.about_image -%}
+              <div class="col-12 wow fadeIn">
+                <figure class="image">
+                  <img src="{{ page.about_image.url }}" alt="">
+                </figure>
+              </div>
+            {%- endif -%}
+
+            {%- if page.about_title -%}
+              <div class="col-12 wow fadeIn">
+                <h4>{{ page.about_title }}</h4>
+              </div>
+            {%- endif -%}
+
+            {%- if page.about_content -%}
+              <div class="col-12 wow fadeIn">
+                <div class="html-content">{{ page.about_content }}</div>
+              </div>
+            {%- endif -%}
+
+            {%- if page.about_content_colored -%}
+              <div class="col-12 wow fadeIn">
+                <div class="html-content">
+                  <blockquote>{{ page.about_content_colored }}</blockquote>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if projects -%}
+              <div class="col-12 wow fadeIn">
+                <div class="simple-slider">
+                  <div class="swiper-wrapper">
+                    {%- for project in projects -%}
+                      <div class="swiper-slide">
+                        <figure>
+                          {%- if project.list_image -%}
+                            <div class="img" style="background-image:url({{ project.list_image.url }})"></div>
+                          {%- endif -%}
+
+                          {%- if project.title or project.categories -%}
+                            <figcaption>
+                              {%- if project.categories_verbose -%}
+                                <small>{{ project.categories_verbose }}</small>
+                              {%- endif -%}
+
+                              {%- if project.title -%}
+                                <h3>
+                                  <a href="{{ lang_url('projects:project', lang=request.LANGUAGE_CODE, slug=project.slug) }}">
+                                    {{- project.title -}}
+                                  </a>
+                                </h3>
+                              {%- endif -%}
+                            </figcaption>
+                          {%- endif -%}
+                        </figure>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+
+                  {%- if projects | length > 1 -%}
+                    <div class="swiper-button-prev"><i class="fas fa-chevron-left"></i></div>
+                    <div class="swiper-button-next"><i class="fas fa-chevron-right"></i></div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+          </div>
+        </article>
+
+        {%- if previous_service or next_service -%}
+          <ul class="pagination wow fadeIn">
+            {%- if previous_service -%}
+              <li class="page-item">
+                <a class="page-link"
+                   href="{{ lang_url('services:service', lang=request.LANGUAGE_CODE, slug=previous_service.slug) }}">
+                  <span>«</span>&nbsp;
+                  {{ previous_service.title }}
+                </a>
+              </li>
+            {%- endif -%}
+
+            {%- if next_service -%}
+              <li class="page-item">
+                <a class="page-link"
+                   href="{{ lang_url('services:service', lang=request.LANGUAGE_CODE, slug=next_service.slug) }}">
+                  {{ next_service.title }}
+                  &nbsp;<span>»</span>
+                </a>
+              </li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- if page.show_call_to_action and page.call_to_action_id -%}
+  <div class="about-callto-action">
+    {%- include 'widgets/call_to_action.html' -%}
+  </div>
+{%- endif -%}
+
+{%- include 'widgets/subscribe.html' -%}
+{%- endblock -%}
+
+{%- block EXTRA_SCRIPTS -%}
+{%- if page.hero_button_script and page.hero_button_content -%}
+  {{- page.hero_button_script -}}
+{%- endif -%}
+{%- endblock -%}

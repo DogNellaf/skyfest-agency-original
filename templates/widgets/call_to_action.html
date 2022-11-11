@@ -1,0 +1,22 @@
+{%- if page.show_call_to_action and page.call_to_action_id -%}
+<section class="content-block custom-block bg-image"
+         data-background="{% if page.call_to_action.bg %}{{ page.call_to_action.bg.url }}{% endif %}"
+         {%- if page.call_to_action.bg_color %}style="background-color:{{ page.call_to_action.bg_color }}"{% endif -%}
+>
+  <div class="container wow fadeIn">
+    {%- if page.call_to_action.subtitle -%}
+      <h6>{{ page.call_to_action.subtitle }}</h6>
+    {%- endif -%}
+
+    {%- if page.call_to_action.title -%}
+      <h2>{{ page.call_to_action.title | linebreaksbr }}</h2>
+    {%- endif -%}
+
+    {%- if page.call_to_action.button_caption and page.call_to_action.button_order -%}
+      <span class="btn order-btn">{{ page.call_to_action.button_caption }}</span>
+    {%- elif page.call_to_action.button_caption and page.call_to_action.button_link -%}
+      <a href="{{ page.call_to_action.button_link }}">{{ page.call_to_action.button_caption }}</a>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
